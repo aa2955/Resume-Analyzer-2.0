@@ -1,8 +1,9 @@
 # Language: Python
 ## Installing dependencies
 * pip install fastapi uvicorn
-* pip install requests
-* pip install bcrypt
+* requests
+* bcrypt
+* pyjwt
 
-## How to execute
-### uvicorn main:app --reload
+## How to execute [go to directory containing app.py]
+### uvicorn app:app --reload
