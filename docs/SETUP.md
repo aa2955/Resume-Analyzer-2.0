@@ -1,8 +1,12 @@
 # Language: Python
 ## Installing dependencies
 * pip install fastapi uvicorn
-* pip install requests
-* pip install bcrypt
+* requests
+* bcrypt
+* pyjwt
+* npx vite 
+* npm install vite --save-dev 
+* npm install react-router-dom
 
-## How to execute
-### uvicorn main:app --reload
+## How to execute [go to directory containing app.py]
+### uvicorn app:app --reload
