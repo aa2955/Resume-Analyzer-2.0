@@ -4,10 +4,17 @@ const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const handleRegister = async (event) => {
     event.preventDefault();
+
+    if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+      return;
+    }
 
     try {
       const response = await fetch('http://127.0.0.1:8000/api/register', {
@@ -43,7 +50,6 @@ const Register = () => {
           <input
             type="text"
             placeholder='Username'
-
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -72,8 +78,20 @@ const Register = () => {
           />
         </label>
         <br />
+        <label>
+          Confirm Password:
+          <input
+            type="password"
+            placeholder='Confirm Password'
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+        </label>
+        <br />
         <button type="submit">Register</button>
       </form>
+      {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
       <p>{message}</p>
     </div>
   );
