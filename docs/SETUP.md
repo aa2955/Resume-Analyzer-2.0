@@ -9,4 +9,5 @@
 * npm install react-router-dom
 
 ## How to execute [go to directory containing app.py]
-### uvicorn app:app --reload
+### backend- fastapi dev app.py
+### frontend- npm run dev
