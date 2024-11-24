@@ -5,6 +5,7 @@ from pydantic import BaseModel, EmailStr
 from passlib.context import CryptContext
 from typing import Optional, Dict
 import jwt
+import bcrypt
 from datetime import datetime, timedelta, timezone
 
 # Initialize app
@@ -85,25 +86,18 @@ async def login_user(username: str = Form(...), password: str = Form(...)):
 # Task 8: Resume Upload Endpoint
 @app.post("/api/resume-upload", status_code=status.HTTP_200_OK)
 async def resume_upload(resume_file: UploadFile = File(...)):
-    # Validate file type
     if '.' not in resume_file.filename or resume_file.filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=400,
             detail="Invalid file type. Only PDF or DOCX files are allowed."
         )
-
-    # Validate file size
     content = await resume_file.read()
     if len(content) > MAX_FILE_SIZE:
         raise HTTPException(
             status_code=400,
             detail="File size exceeds the 2MB limit."
         )
-
-    return {
-        "message": "Resume uploaded successfully.",
-        "status": "success"
-    }
+    return {"message": "Resume uploaded successfully.", "status": "success"}
 
 
 # Task 8: Job Description Submission Endpoint
