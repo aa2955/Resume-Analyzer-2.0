@@ -3,6 +3,8 @@ import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import JobDescriptionForm from './JobDescriptionForm';
+
 
 function App() {
   return (
@@ -20,6 +22,9 @@ function App() {
             <li>
               <Link to="/dashboard">Dashboard</Link>
             </li>
+            <li>
+              <Link to="/JobDescriptionForm">JobDescriptionForm</Link>
+            </li>
           </ul>
         </nav>
         <Routes>
@@ -28,6 +33,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/JobDescriptionForm" element={<JobDescriptionForm />} />
         </Routes>
       </div>
     </BrowserRouter>

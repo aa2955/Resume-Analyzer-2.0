@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
+import { Navigate } from "react-router-dom";
+import LoadingSpinner from './LoadingSpinner';  // Import the loading spinner
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);  // Add loading state
 
   const handleLogin = async (event) => {
     event.preventDefault();
+
+    setLoading(true);  // Show loading spinner
 
     try {
       const response = await fetch('http://127.0.0.1:8000/api/login', {
@@ -20,6 +25,8 @@ const Login = () => {
         }),
       });
 
+      setLoading(false);  // Hide loading spinner
+
       if (response.ok) {
         const data = await response.json();
         const token = data.token;
@@ -30,6 +37,7 @@ const Login = () => {
         setMessage(errorData.detail || 'Invalid username or password');
       }
     } catch (error) {
+      setLoading(false);  // Hide loading spinner
       setMessage('An error occurred: ' + error.message);
     }
   };
@@ -37,13 +45,13 @@ const Login = () => {
   return (
     <div>
       <h2>Login</h2>
+      {loading && <LoadingSpinner />}  {/* Show the spinner if loading */}
       <form onSubmit={handleLogin}>
         <label>
           Username:
           <input
             type="text"
-            placeholder='Username'
-
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -54,8 +62,7 @@ const Login = () => {
           Password:
           <input
             type="password"
-            placeholder='Password'
-
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

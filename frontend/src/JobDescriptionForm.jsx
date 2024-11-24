@@ -1,8 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import LoadingSpinner from './LoadingSpinner';
 
 const JobDescriptionForm = () => {
   const [jobDescription, setJobDescription] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -11,6 +13,8 @@ const JobDescriptionForm = () => {
       setMessage("Please enter a job description.");
       return;
     }
+
+    setLoading(true); // Show loading spinner
 
     try {
       const response = await fetch("http://127.0.0.1:8000/api/job-description", {
@@ -21,6 +25,8 @@ const JobDescriptionForm = () => {
         body: JSON.stringify({ job_description: jobDescription }),
       });
 
+      setLoading(false); // Hide loading spinner
+
       if (response.ok) {
         setMessage("Job description submitted successfully.");
       } else {
@@ -28,6 +34,7 @@ const JobDescriptionForm = () => {
         setMessage(errorData.detail || "Error submitting job description.");
       }
     } catch {
+      setLoading(false);
       setMessage("An error occurred. Please try again.");
     }
   };
@@ -35,6 +42,7 @@ const JobDescriptionForm = () => {
   return (
     <div>
       <h2>Submit Job Description</h2>
+      {loading && <LoadingSpinner />}
       <form onSubmit={handleSubmit}>
         <label htmlFor="jobDescription">Paste Job Description:</label>
         <textarea
