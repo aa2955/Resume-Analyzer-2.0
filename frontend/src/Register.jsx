@@ -44,7 +44,7 @@ const Register = () => {
   return (
     <div>
       <h2>Register</h2>
-      {loading && <LoadingSpinner />}
+      {loading && <LoadingSpinner/>}
       <form onSubmit={handleRegister}>
         <label>
           Username:

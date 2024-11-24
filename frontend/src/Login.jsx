@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Navigate } from "react-router-dom";
-import LoadingSpinner from './LoadingSpinner';  // Import the loading spinner
+import LoadingSpinner from './LoadingSpinner';  
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);  // Add loading state
+  const [loading, setLoading] = useState(false);  
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
-    setLoading(true);  // Show loading spinner
+    setLoading(true);  
 
     try {
       const response = await fetch('http://127.0.0.1:8000/api/login', {
@@ -25,7 +25,7 @@ const Login = () => {
         }),
       });
 
-      setLoading(false);  // Hide loading spinner
+      setLoading(false); 
 
       if (response.ok) {
         const data = await response.json();
@@ -37,7 +37,7 @@ const Login = () => {
         setMessage(errorData.detail || 'Invalid username or password');
       }
     } catch (error) {
-      setLoading(false);  // Hide loading spinner
+      setLoading(false);  
       setMessage('An error occurred: ' + error.message);
     }
   };
@@ -45,7 +45,7 @@ const Login = () => {
   return (
     <div>
       <h2>Login</h2>
-      {loading && <LoadingSpinner />}  {/* Show the spinner if loading */}
+      {loading && <LoadingSpinner/>} 
       <form onSubmit={handleLogin}>
         <label>
           Username:
