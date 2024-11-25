@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { Document, Page , pdfjs } from 'react-pdf';
-//import * as pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+import { Document, Page, pdfjs } from 'react-pdf';
 
-//pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
 const ResumeUpload = () => {
   const [resumeFile, setResumeFile] = useState(null);
   const [charCount, setCharCount] = useState(0);
@@ -76,7 +74,7 @@ const ResumeUpload = () => {
 
         if(response.ok){
           const data= await response.json();
-          setMessage(data.message);
+          setMessage(data.content);
         }
         else{
           const errorData = await response.json();
@@ -122,18 +120,27 @@ const ResumeUpload = () => {
     <div>
       <form onSubmit={handleResumeCheck}>
       <h2>Resume Upload</h2>
-      <input type="file" accept=".pdf" onChange={handleFileChange} required/>
-      {resumeFile ? (
-        <Document file={resumeFile?  URL.createObjectURL(resumeFile): null}
-          onLoadSuccess={() => setMessage('PDF loaded successfully')}
-        >
-          <Page pageNumber={1} />
-        </Document>
-      ) : (
-        <p>No file uploaded</p>
-      )}
+      <input type="file" 
+      accept="application/pdf"
+      onChange={handleFileChange} 
+      required/>
+
       <button type="submit">Submit Resume</button>
       </form>
+      {resumeFile && (
+          <div>
+              <h3>PDF Preview:</h3>
+              <Document
+                  file={URL.createObjectURL(resumeFile)}
+                  onLoadSuccess={() => setMessage("PDF loaded successfully.")}
+                  onLoadError={(error) =>
+                      setMessage("Failed to PDF: " + error.message)
+                  }
+              >
+                <Page pageNumber={1} />
+              </Document>
+          </div>
+      )}
 
       <br/>
       <br/>
