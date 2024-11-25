@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import LoadingSpinner from './LoadingSpinner';  
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
 const ResumeUpload = () => {
@@ -8,7 +9,8 @@ const ResumeUpload = () => {
   const [jobDescription, setJobDescription] = useState('');
   const [message, setMessage] = useState('');
   const [resumeCheck, setResumeCheck]= useState(false);
-
+  
+  const [loading, setLoading] = useState(false); 
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -37,6 +39,7 @@ const ResumeUpload = () => {
   const handleCharCount = (e) =>{
     e.preventDefault();
 
+
     if (charCount <5000){
       setJobDescription(e.target.value);
       setCharCount(e.target.value.length);
@@ -61,6 +64,7 @@ const ResumeUpload = () => {
 
   const handleResumeCheck = async (event) =>{
     event.preventDefault();
+    setLoading(true);  
 
     try{
       if (resumeCheck){
@@ -72,9 +76,11 @@ const ResumeUpload = () => {
           body: formData,
         });
 
+        setLoading(false); 
+
         if(response.ok){
           const data= await response.json();
-          setMessage(data.content);
+          setMessage("resume updated successfully");
         }
         else{
           const errorData = await response.json();
@@ -92,7 +98,7 @@ const ResumeUpload = () => {
 
   const handleJobDescription= async (event) =>{
     event.preventDefault();
-
+ setLoading(true);  
     try{
       const response = await fetch('http://127.0.0.1:8000/api/job-description', {
         method: 'POST',
@@ -102,6 +108,7 @@ const ResumeUpload = () => {
         body: JSON.stringify({ job_description: jobDescription }),
       });
 
+      setLoading(false); 
       if(response.ok){
         const data= await response.json();
         setMessage(data.message);
@@ -118,6 +125,7 @@ const ResumeUpload = () => {
 
   return (
     <div>
+      {loading && <LoadingSpinner/>} 
       <form onSubmit={handleResumeCheck}>
       <h2>Resume Upload</h2>
       <input type="file" 
@@ -144,6 +152,7 @@ const ResumeUpload = () => {
 
       <br/>
       <br/>
+      {loading && <LoadingSpinner/>} 
       <form onSubmit={handleJobDescription}>
       <label>
         Job Description
