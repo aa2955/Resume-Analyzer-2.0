@@ -8,7 +8,7 @@ const ResumeUpload = () => {
   const [jobDescription, setJobDescription] = useState('');
   const [message, setMessage] = useState('');
   const [resumeCheck, setResumeCheck]= useState(false);
-
+  const [preview, setPreview]= useState(true);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -24,6 +24,7 @@ const ResumeUpload = () => {
         else{
           setResumeCheck(true);
           setResumeFile(file);
+          setPreview(true);
           setMessage('');
         }
     } 
@@ -74,7 +75,9 @@ const ResumeUpload = () => {
 
         if(response.ok){
           const data= await response.json();
-          setMessage(data.content);
+          //setMessage(data.content);
+          setPreview(false);
+          setMessage('Uploaded Successfully');
         }
         else{
           const errorData = await response.json();
@@ -127,7 +130,7 @@ const ResumeUpload = () => {
 
       <button type="submit">Submit Resume</button>
       </form>
-      {resumeFile && (
+      {resumeFile && preview && (
           <div>
               <h3>PDF Preview:</h3>
               <Document
