@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import LoadingSpinner from './LoadingSpinner';  
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
 const ResumeUpload = () => {
@@ -9,8 +8,8 @@ const ResumeUpload = () => {
   const [jobDescription, setJobDescription] = useState('');
   const [message, setMessage] = useState('');
   const [resumeCheck, setResumeCheck]= useState(false);
-  
-  const [loading, setLoading] = useState(false); 
+  const [preview, setPreview]= useState(true);
+  const [loading, setLoading] = useState(false);  
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -26,6 +25,7 @@ const ResumeUpload = () => {
         else{
           setResumeCheck(true);
           setResumeFile(file);
+          setPreview(true);
           setMessage('');
         }
     } 
@@ -38,7 +38,6 @@ const ResumeUpload = () => {
 
   const handleCharCount = (e) =>{
     e.preventDefault();
-
 
     if (charCount <5000){
       setJobDescription(e.target.value);
@@ -64,8 +63,7 @@ const ResumeUpload = () => {
 
   const handleResumeCheck = async (event) =>{
     event.preventDefault();
-    setLoading(true);  
-
+    setLoading(true);
     try{
       if (resumeCheck){
         const formData= new FormData();
@@ -76,11 +74,11 @@ const ResumeUpload = () => {
           body: formData,
         });
 
-        setLoading(false); 
-
         if(response.ok){
           const data= await response.json();
-          setMessage("resume updated successfully");
+          //setMessage(data.content);
+          setPreview(false);
+          setMessage('Uploaded Successfully');
         }
         else{
           const errorData = await response.json();
@@ -95,10 +93,10 @@ const ResumeUpload = () => {
       setMessage('An error occurred: '+ error.message);
     }
   };
-
+  setLoading(false); 
   const handleJobDescription= async (event) =>{
     event.preventDefault();
- setLoading(true);  
+
     try{
       const response = await fetch('http://127.0.0.1:8000/api/job-description', {
         method: 'POST',
@@ -108,7 +106,6 @@ const ResumeUpload = () => {
         body: JSON.stringify({ job_description: jobDescription }),
       });
 
-      setLoading(false); 
       if(response.ok){
         const data= await response.json();
         setMessage(data.message);
@@ -135,7 +132,7 @@ const ResumeUpload = () => {
 
       <button type="submit">Submit Resume</button>
       </form>
-      {resumeFile && (
+      {resumeFile && preview && (
           <div>
               <h3>PDF Preview:</h3>
               <Document
