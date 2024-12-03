@@ -28,7 +28,10 @@ app.add_middleware(
 )
 
 #Hugging Face NLP API
-load_dotenv()
+
+load_dotenv(".env")  
+
+#print(HUGGINGFACE_API_KEY)
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 if not HUGGINGFACE_API_KEY:
     raise EnvironmentError("Hugging Face API key not set in environment variables.")

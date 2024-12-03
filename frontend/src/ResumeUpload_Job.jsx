@@ -61,39 +61,37 @@ const ResumeUpload = () => {
     setJobDescription('');
   };
 
-  const handleResumeCheck = async (event) =>{
+  const handleResumeCheck = async (event) => {
     event.preventDefault();
-    setLoading(true);
-    try{
-      if (resumeCheck){
-        const formData= new FormData();
-        formData.append('resume_file', resumeFile);
+    setLoading(true); // Set loading to true at the start
+    try {
+        if (resumeCheck) {
+            const formData = new FormData();
+            formData.append('resume_file', resumeFile);
 
-        const response = await fetch('http://127.0.0.1:8000/api/resume-upload', {
-          method: 'POST',
-          body: formData,
-        });
+            const response = await fetch('http://127.0.0.1:8000/api/resume-upload', {
+                method: 'POST',
+                body: formData,
+            });
 
-        if(response.ok){
-          const data= await response.json();
-          //setMessage(data.content);
-          setPreview(false);
-          setMessage('Uploaded Successfully');
+            if (response.ok) {
+                const data = await response.json();
+                setPreview(false);
+                setMessage('Uploaded Successfully');
+            } else {
+                const errorData = await response.json();
+                setMessage(errorData.detail || 'Failed to send data');
+            }
+        } else {
+            throw new Error("Invalid File");
         }
-        else{
-          const errorData = await response.json();
-          setMessage(errorData.detail || 'Failed to send data');
-        }
-      }
-      else{
-        throw new Error("Invalid File");
-      }
+    } catch (error) {
+        setMessage('An error occurred: ' + error.message);
+    } finally {
+        setLoading(false); // Ensure loading is set to false when the operation finishes
     }
-    catch (error){
-      setMessage('An error occurred: '+ error.message);
-    }
-  };
-  setLoading(false); 
+};
+
   const handleJobDescription= async (event) =>{
     event.preventDefault();
 
