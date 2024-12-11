@@ -25,7 +25,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-title">Resume Analysis Dashboard</h1>
+      <h2 className="dashboard-title">Resume Analysis Dashboard</h2>
 
       {/* Resume Fit Score */}
       <section className="dashboard-section">

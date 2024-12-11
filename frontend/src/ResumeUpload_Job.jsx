@@ -185,6 +185,7 @@ const ResumeUpload = () => {
       <form onSubmit={handleJobDescription}>
       <label>
         Job Description
+        <br></br>
         <textarea
           id= "jobDescription"
           name="jobDescription"
@@ -199,7 +200,7 @@ const ResumeUpload = () => {
       <button type='submit'>Submit Job Description</button>
       <button onClick={handleClick}>Clear</button>
       </form>
-      <p>{message}</p>
+      <p className="message">{message}</p>
     </div>
   );
 };
