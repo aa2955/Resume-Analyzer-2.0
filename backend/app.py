@@ -13,6 +13,7 @@ import fitz
 import requests
 from dotenv import load_dotenv
 import os
+import numpy as np
 
 # Initialize app
 app = FastAPI()
@@ -226,31 +227,43 @@ async def get_current_data():
     }
 
 
+# def cosine_similarity(embedding1, embedding2):
+#     """Calculate cosine similarity between two vectors."""
+#     embedding1 = np.array(embedding1)
+#     embedding2 = np.array(embedding2)
+#     return float(np.dot(embedding1, embedding2) / (np.linalg.norm(embedding1) * np.linalg.norm(embedding2)))
+
+
+#Authorization Key
+HEADERS = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
 # API NLP Endpoint
 @app.post("/api/analyze")
 async def analyze():
     
     # Construct the request to Hugging Face NLP API
-    headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
-    data = {
-        "inputs": {
-            "resume": current_analysis["resume_text"],
-            "job_description": current_analysis["job_text"]
-        }
-    }
-    
+
     try:
-        response = requests.post(
-            #Dummy model sent https://api-inference.huggingface.co/models/your-model
-            #Might have to create our own model
-            "https://api-inference.huggingface.co/models/model",
-            headers=headers,
-            json=data
-        )
-        # Raise error if the Hugging Face API returns an HTTP error
-        response.raise_for_status()
+        def similarity_score(resume_text, job_text):
+            response = requests.post(
+                "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2",
+                headers=HEADERS,
+                json={"inputs": {
+                    "source_sentence":resume_text, 
+                    "sentences": [job_text]
+                    },
+                }
+            )
+            response.raise_for_status()
+            return response.json()
+        
+        similarity= similarity_score(current_analysis["resume_text"], current_analysis["job_text"])
+
+        print(similarity)
+        return similarity
+    
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Error connecting to NLP API: {e}")
     
     # Parse and return the response from the NLP API
-    return response.json()
+    # print(response.json())
+    # return response.json()
