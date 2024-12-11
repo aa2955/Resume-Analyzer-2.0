@@ -14,6 +14,8 @@ import requests
 from dotenv import load_dotenv
 import os
 import numpy as np
+from docx import Document
+from io import BytesIO
 
 # Initialize app
 app = FastAPI()
@@ -171,6 +173,16 @@ def extract_text_from_pdf(file):
         text += page.get_text()
     return text
 
+def extract_text_from_word(file):
+    file= BytesIO(file)
+    doc= Document(file)
+    text= ""
+
+    for paragraph in doc.paragraphs:
+        text += paragraph.text + "\n"
+
+    return text
+
 # Task 11: Resume Upload Endpoint with text extraction from PDF
 @app.post("/api/resume-upload", status_code=status.HTTP_200_OK)
 async def resume_upload(resume_file: UploadFile = File(...)):
@@ -178,7 +190,7 @@ async def resume_upload(resume_file: UploadFile = File(...)):
     if '.' not in resume_file.filename or resume_file.filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=400,
-            detail="Invalid file type. Only PDFs allowed."
+            detail="Invalid file type. Only PDF or WORD allowed."
         )
 
     # Validate file size <=2MB
@@ -189,6 +201,8 @@ async def resume_upload(resume_file: UploadFile = File(...)):
             detail="File size exceeds 2MB limit."
         )
 
+    print(resume_file)
+    print("file parsed")
     # Extract text from PDF if it's a PDF file
     if resume_file.filename.endswith(".pdf"):
         text = extract_text_from_pdf(content)
@@ -197,6 +211,13 @@ async def resume_upload(resume_file: UploadFile = File(...)):
         current_analysis["resume_text"]= text
 
         return {"message": "Resume uploaded successfully.", "extracted_text": text, "status": "success"}
+    elif resume_file.filename.endswith(".docx"):
+        text= extract_text_from_word(content)
+
+        current_analysis["resume_text"]= text
+        print(text)
+        return {"message": "Resume uploaded successfully.", "extracted_text": text, "status": "success"}
+
 
     return {"message": "Resume uploaded successfully.", "status": "success"}
 
