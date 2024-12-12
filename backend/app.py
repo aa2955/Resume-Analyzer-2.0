@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
 from passlib.context import CryptContext
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 import jwt
 import os
 from PyPDF2 import PdfReader
@@ -15,7 +15,11 @@ from dotenv import load_dotenv
 import os
 from fastapi import HTTPException, status
 from pydantic import BaseModel, Field
-
+import numpy as np
+from docx import Document
+from io import BytesIO
+from collections import Counter
+import string
 # Initialize app
 app = FastAPI()
 # CORS Configuration
@@ -175,6 +179,16 @@ def extract_text_from_pdf(file):
         text += page.get_text()
     return text
 
+def extract_text_from_word(file):
+    file= BytesIO(file)
+    doc= Document(file)
+    text= ""
+
+    for paragraph in doc.paragraphs:
+        text += paragraph.text + "\n"
+
+    return text
+
 # Task 11: Resume Upload Endpoint with text extraction from PDF
 @app.post("/api/resume-upload", status_code=status.HTTP_200_OK)
 async def resume_upload(resume_file: UploadFile = File(...)):
@@ -182,7 +196,7 @@ async def resume_upload(resume_file: UploadFile = File(...)):
     if '.' not in resume_file.filename or resume_file.filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=400,
-            detail="Invalid file type. Only PDFs allowed."
+            detail="Invalid file type. Only PDF or WORD allowed."
         )
 
     # Validate file size <=2MB
@@ -193,6 +207,8 @@ async def resume_upload(resume_file: UploadFile = File(...)):
             detail="File size exceeds 2MB limit."
         )
 
+    print(resume_file)
+    print("file parsed")
     # Extract text from PDF if it's a PDF file
     if resume_file.filename.endswith(".pdf"):
         text = extract_text_from_pdf(content)
@@ -201,6 +217,13 @@ async def resume_upload(resume_file: UploadFile = File(...)):
         current_analysis["resume_text"]= text
 
         return {"message": "Resume uploaded successfully.", "extracted_text": text, "status": "success"}
+    elif resume_file.filename.endswith(".docx"):
+        text= extract_text_from_word(content)
+
+        current_analysis["resume_text"]= text
+        print(text)
+        return {"message": "Resume uploaded successfully.", "extracted_text": text, "status": "success"}
+
 
     return {"message": "Resume uploaded successfully.", "status": "success"}
 
@@ -231,34 +254,46 @@ async def get_current_data():
     }
 
 
+# def cosine_similarity(embedding1, embedding2):
+#     """Calculate cosine similarity between two vectors."""
+#     embedding1 = np.array(embedding1)
+#     embedding2 = np.array(embedding2)
+#     return float(np.dot(embedding1, embedding2) / (np.linalg.norm(embedding1) * np.linalg.norm(embedding2)))
+
+
+#Authorization Key
+HEADERS = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
 # API NLP Endpoint
 @app.post("/api/analyze")
 async def analyze():
     
     # Construct the request to Hugging Face NLP API
-    headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
-    data = {
-        "inputs": {
-            "resume": current_analysis["resume_text"],
-            "job_description": current_analysis["job_text"]
-        }
-    }
-    
+
     try:
-        response = requests.post(
-            #Dummy model sent https://api-inference.huggingface.co/models/your-model
-            #Might have to create our own model
-            "https://api-inference.huggingface.co/models/model",
-            headers=headers,
-            json=data
-        )
-        # Raise error if the Hugging Face API returns an HTTP error
-        response.raise_for_status()
+        def similarity_score(resume_text, job_text):
+            response = requests.post(
+                "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2",
+                headers=HEADERS,
+                json={"inputs": {
+                    "source_sentence":resume_text, 
+                    "sentences": [job_text]
+                    },
+                }
+            )
+            response.raise_for_status()
+            return response.json()
+        
+        similarity= similarity_score(current_analysis["resume_text"], current_analysis["job_text"])
+
+        print(similarity)
+        return similarity
+    
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Error connecting to NLP API: {e}")
     
     # Parse and return the response from the NLP API
-    return response.json()
+    # print(response.json())
+    # return response.json()
 
 
 #Task 19
@@ -316,3 +351,68 @@ async def analyze_data(input_data: Input):
     
     return Output(fit_score=fit_score, feedback=feedback)
 
+
+
+# Helper function to tokenize and normalize text
+def tokenize_and_normalize(text: str) -> List[str]:
+    text = text.lower()
+    text = text.translate(str.maketrans("", "", string.punctuation))
+    tokens = text.split()
+    return tokens
+
+# Task 21: Algorithm to Compare Resume and Job Description
+def calculate_fit_score(resume_text: str, job_description: str) -> Dict:
+    if not resume_text or not job_description:
+        raise HTTPException(status_code=400, detail="Resume text or job description cannot be empty.")
+
+    # Tokenize and normalize inputs
+    resume_tokens = tokenize_and_normalize(resume_text)
+    job_tokens = tokenize_and_normalize(job_description)
+
+    # Count keywords in both texts
+    resume_counter = Counter(resume_tokens)
+    job_counter = Counter(job_tokens)
+
+    # Find matched keywords
+    matched_keywords = set(resume_tokens) & set(job_tokens)
+    matched_count = sum(job_counter[keyword] for keyword in matched_keywords)
+
+    # Total keywords in the job description
+    total_keywords = sum(job_counter.values())
+
+    # Calculate fit score
+    fit_score = (matched_count / total_keywords) * 100 if total_keywords > 0 else 0
+
+    # Generate feedback for unmatched keywords
+    unmatched_keywords = set(job_tokens) - set(resume_tokens)
+    feedback = [f"Consider adding '{keyword}' to your resume." for keyword in unmatched_keywords]
+
+    # Return the result with matched keywords and feedback
+    return {
+        "fit_score": round(fit_score,2),
+        "matched_keywords": list(matched_keywords),
+        "unmatched_keywords": list(unmatched_keywords),
+        "feedback": feedback
+    }
+
+class Output(BaseModel):
+    fit_score: int = Field(..., ge=0, le=100, description="Resume-job fit percentage.")
+    matched_keywords: List[str] = Field(..., description="Keywords matched between resume and job description.")
+    unmatched_keywords: List[str] = Field(..., description="Keywords not found in the resume.")
+    feedback: List[str] = Field(..., description="Suggestions for improvement.")
+
+
+@app.post("/api/calculate-fit")
+async def calculate_fit(input_data: Input):
+    try:
+        result = calculate_fit_score(input_data.resume_text, input_data.job_description)
+        return Output(
+            fit_score=int(result["fit_score"]),
+            matched_keywords=result["matched_keywords"],
+            unmatched_keywords=result["unmatched_keywords"],
+            feedback=result["feedback"]
+        )
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error occurred: {e}")
