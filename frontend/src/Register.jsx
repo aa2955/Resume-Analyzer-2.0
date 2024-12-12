@@ -56,6 +56,7 @@ const Register = () => {
       <form onSubmit={handleRegister}>
         <label>
           Username:
+          <br></br>
           <input
             type="text"
             placeholder="Username"
@@ -67,6 +68,7 @@ const Register = () => {
         <br />
         <label>
           Email:
+          <br></br>
           <input
             type="email"
             placeholder="Email"
@@ -78,6 +80,7 @@ const Register = () => {
         <br />
         <label>
           Password:
+          <br></br>
           <input
             type="password"
             placeholder="Password"
@@ -89,6 +92,7 @@ const Register = () => {
         <br />
         <label>
           Confirm Password:
+          <br></br>
           <input
             type="password"
             placeholder="Confirm Password"
@@ -103,7 +107,7 @@ const Register = () => {
         </button>
       </form>
       {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
-      <p>{message}</p>
+      <p className="message">{message}</p>
     </div>
   );
 };

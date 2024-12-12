@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import mammoth from "mammoth";
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
 const ResumeUpload = () => {
@@ -10,10 +11,32 @@ const ResumeUpload = () => {
   const [resumeCheck, setResumeCheck]= useState(false);
   const [preview, setPreview]= useState(true);
   const [loading, setLoading] = useState(false);  
+  const [isPDF, setIsPDF]= useState(false);
+  const [isWORD, setIsWORD]= useState(false);
+  const [docxPreview, setDocxPreview] = useState("");
+
+  const handleDocxPreview = async (file) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        const arrayBuffer = e.target.result;
+        const { value } = await mammoth.extractRawText({ arrayBuffer });
+        setDocxPreview(value);
+    };
+    reader.readAsArrayBuffer(file);
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file && file.type === 'application/pdf') {
+    if (file && (file.type === 'application/pdf' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
+
+        if (file.type === 'application/pdf'){
+          setIsPDF(true);
+          setIsWORD(false);
+        }
+        if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+          setIsWORD(true);
+          setIsPDF(false);
+        }
         const fileSize= file.size/ (1024*1024);
 
         if(fileSize > 2){
@@ -30,7 +53,7 @@ const ResumeUpload = () => {
         }
     } 
     else {
-      alert('Please upload a valid PDF file.');
+      alert('Please upload a valid PDF or DOCX file.');
       setResumeFile(null);
       setResumeCheck(false);
     }
@@ -124,25 +147,37 @@ const ResumeUpload = () => {
       <form onSubmit={handleResumeCheck}>
       <h2>Resume Upload</h2>
       <input type="file" 
-      accept="application/pdf"
+      accept="application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       onChange={handleFileChange} 
       required/>
 
       <button type="submit">Submit Resume</button>
       </form>
-      {resumeFile && preview && (
+      {resumeFile && preview && isPDF &&(
           <div>
-              <h3>PDF Preview:</h3>
+              <h3>File Preview:</h3>
               <Document
                   file={URL.createObjectURL(resumeFile)}
-                  onLoadSuccess={() => setMessage("PDF loaded successfully.")}
+                  onLoadSuccess={() => setMessage("File loaded successfully.")}
                   onLoadError={(error) =>
-                      setMessage("Failed to PDF: " + error.message)
+                      setMessage("Failed to load: " + error.message)
                   }
               >
                 <Page pageNumber={1} />
               </Document>
           </div>
+      )}
+
+      {resumeFile && preview && isWORD &&(
+        <div>
+          <h3>File Preview:</h3>
+          <div>
+              <button onClick={() => handleDocxPreview(resumeFile)}>
+                  Load Word Preview
+              </button>
+              <div style={{ whiteSpace: "pre-wrap" }}>{docxPreview}</div>
+          </div>
+        </div>
       )}
 
       <br/>
@@ -151,6 +186,7 @@ const ResumeUpload = () => {
       <form onSubmit={handleJobDescription}>
       <label>
         Job Description
+        <br></br>
         <textarea
           id= "jobDescription"
           name="jobDescription"
@@ -165,7 +201,7 @@ const ResumeUpload = () => {
       <button type='submit'>Submit Job Description</button>
       <button onClick={handleClick}>Clear</button>
       </form>
-      <p>{message}</p>
+      <p className="message">{message}</p>
     </div>
   );
 };

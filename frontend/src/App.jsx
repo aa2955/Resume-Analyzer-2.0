@@ -26,34 +26,34 @@ function App() {
   return (
     <BrowserRouter>
       <div>
-        <h1>Home</h1>
+        <h1>Resume Analyzer</h1>
         <nav>
           <ul>
+            <li id="dashboard">
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
             {isLoggedIn ? (
               <>
-                <li>
-                  <button onClick={handleLogout}>Logout</button>
-                </li>
                 <li>
                   <Link to="/resume-upload">Resume Upload</Link>
                 </li>
                 <li>
                   <Link to='/current-data'>Data</Link>
                 </li>
+                <li id= "logout">
+                  <button onClick={handleLogout}>Logout</button>
+                </li>
               </>
             ) : (
               <>
                 <li>
-                  <Link to="/login">Login</Link>
-                </li>
-                <li>
                   <Link to="/register">Register</Link>
                 </li>
+                <li>
+                  <Link to="/login">Login</Link>
+                </li> 
               </>
             )}
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
           </ul>
         </nav>
         <Routes>

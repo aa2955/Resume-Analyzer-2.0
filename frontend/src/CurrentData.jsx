@@ -23,7 +23,7 @@ const CurrentData= () => {
             const data= await response.json();
             if (data.missing_fields) {
                 setDataFetch(false);
-                throw new Error('Incomplete analysis :  ', data.missing_fields.job_description);
+                throw new Error('Incomplete analysis -  '+ "Resume: "+ data.missing_fields["resume_text"]+ " Job Description: "+data.missing_fields["job_description"]);
             }
             else{
                 setDataFetch(true);
@@ -55,12 +55,15 @@ const CurrentData= () => {
                 });
 
                 if (!response.ok) {
+                    setLoading(false);
                     const errorData= await response.json();
                     throw new Error(errorData.detail);
                 }
                 else{
+                    setLoading(false);
                     const data= await response.json();
-                    setMessage('Awaiting Analysis Results...');
+                    setMessage('Awaiting Analysis Results... '+ JSON.stringify(data));
+                    console.log(data);
                 }
             }
             catch (error){

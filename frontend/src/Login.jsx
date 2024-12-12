@@ -53,6 +53,7 @@ const Login = ({onLoginSuccess}) => {
       <form onSubmit={handleLogin}>
         <label>
           Username:
+          <br></br>
           <input
             type="text"
             placeholder="Username"
@@ -64,6 +65,7 @@ const Login = ({onLoginSuccess}) => {
         <br />
         <label>
           Password:
+          <br></br>
           <input
             type="password"
             placeholder="Password"
@@ -75,7 +77,7 @@ const Login = ({onLoginSuccess}) => {
         <br />
         <button type="submit">Login</button>
       </form>
-      <p>{message}</p>
+      <p className="message">{message}</p>
     </div>
   );
 };
