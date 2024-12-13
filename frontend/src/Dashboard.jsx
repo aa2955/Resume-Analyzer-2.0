@@ -214,3 +214,23 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+
+//From tasks 21,22
+  /* Improvement Suggestions */
+  /*
+  <section className="dashboard-section">
+  <h2>Improvement Suggestions</h2>
+  <ul className="list">
+    {improvementSuggestions.length > 0 ? (
+      improvementSuggestions.map((suggestion, index) => (
+        <li key={index} className="list-item">
+          {suggestion}
+        </li>
+      ))
+    ) : (
+      <li>No suggestions available</li>
+    )}
+  </ul>
+</section>
+ */
