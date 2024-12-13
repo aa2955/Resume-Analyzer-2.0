@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import mammoth from "mammoth";
+import LoadingSpinner from './LoadingSpinner';  
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
 const ResumeUpload = () => {
@@ -14,6 +15,7 @@ const ResumeUpload = () => {
   const [isPDF, setIsPDF]= useState(false);
   const [isWORD, setIsWORD]= useState(false);
   const [docxPreview, setDocxPreview] = useState("");
+   
 
   const handleDocxPreview = async (file) => {
     const reader = new FileReader();
@@ -142,7 +144,7 @@ const ResumeUpload = () => {
   };
 
   return (
-    <div>
+    <div class="container">
       {loading && <LoadingSpinner/>} 
       <form onSubmit={handleResumeCheck}>
       <h2>Resume Upload</h2>
@@ -153,6 +155,7 @@ const ResumeUpload = () => {
 
       <button type="submit">Submit Resume</button>
       </form>
+    {/*
       {resumeFile && preview && isPDF &&(
           <div>
               <h3>File Preview:</h3>
@@ -179,7 +182,7 @@ const ResumeUpload = () => {
           </div>
         </div>
       )}
-
+*/}
       <br/>
       <br/>
       {loading && <LoadingSpinner/>} 

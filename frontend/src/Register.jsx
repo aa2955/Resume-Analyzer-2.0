@@ -50,7 +50,7 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div class="container">
       <h2>Register</h2>
       {loading && <LoadingSpinner />}
       <form onSubmit={handleRegister}>

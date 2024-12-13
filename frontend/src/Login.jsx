@@ -50,7 +50,7 @@ const Login = ({onLoginSuccess}) => {
     <div>
       <h2>Login</h2>
       {loading && <LoadingSpinner/>} 
-      <form onSubmit={handleLogin}>
+      <form class="container" onSubmit={handleLogin}>
         <label>
           Username:
           <br></br>
