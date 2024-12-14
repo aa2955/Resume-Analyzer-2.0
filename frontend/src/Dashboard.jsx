@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import "./App.css";
 import jsPDF from "jspdf";
+import "./App.css";
 
 const Dashboard = () => {
   const token = localStorage.getItem("access_token");
@@ -16,8 +16,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  
-  // Fetching data from the backend (current analysis data)
+
+  // Fetch existing data (resume & job description)
   useEffect(() => {
     if (!token) {
       return;
@@ -29,7 +29,7 @@ const Dashboard = () => {
         const response = await fetch("http://localhost:8000/api/current-data", {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -44,9 +44,9 @@ const Dashboard = () => {
 
         setResumeText(data.resume);
         setJobDescription(data.job_description);
-      } catch (error) {
-        console.error("Error fetching current data:", error);
-        setError(error.message);
+      } catch (err) {
+        console.error("Error fetching current data:", err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -55,7 +55,7 @@ const Dashboard = () => {
     fetchCurrentData();
   }, [token]);
 
-  // Fetching analysis data based on resume and job description
+  // Fetch analysis data when resume & job description are available
   useEffect(() => {
     if (resumeText && jobDescription) {
       const fetchAnalysisData = async () => {
@@ -65,7 +65,7 @@ const Dashboard = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
               resume_text: resumeText,
@@ -84,9 +84,9 @@ const Dashboard = () => {
           setMatchedSkills(data.matched_keywords);
           setUnmatchedSkills(data.unmatched_keywords);
           setImprovementSuggestions(data.feedback);
-        } catch (error) {
-          console.error("Error fetching analysis data:", error);
-          setError(error.message);
+        } catch (err) {
+          console.error("Error fetching analysis data:", err);
+          setError(err.message);
         } finally {
           setLoading(false);
         }
@@ -104,6 +104,11 @@ const Dashboard = () => {
   // Error state
   if (error) {
     return <p>Error: {error}</p>;
+  }
+
+  // Redirect to login if no token is found
+  if (!token) {
+    return <Navigate to="/login" />;
   }
 
   // Filter feedback based on selected category
@@ -133,11 +138,6 @@ const Dashboard = () => {
 
     doc.save("Resume_Analysis_Report.pdf");
   };
-
-  // Redirect to login if no token is found
-  if (!token) {
-    return <Navigate to="/login" />;
-  }
 
   return (
     <div className="dashboard-container">
@@ -214,23 +214,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-
-//From tasks 21,22
-  /* Improvement Suggestions */
-  /*
-  <section className="dashboard-section">
-  <h2>Improvement Suggestions</h2>
-  <ul className="list">
-    {improvementSuggestions.length > 0 ? (
-      improvementSuggestions.map((suggestion, index) => (
-        <li key={index} className="list-item">
-          {suggestion}
-        </li>
-      ))
-    ) : (
-      <li>No suggestions available</li>
-    )}
-  </ul>
-</section>
- */
