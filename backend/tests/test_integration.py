@@ -1,3 +1,4 @@
+import os
 def test_full_workflow(client):
     # Register User
     client.post("/api/register", data={
@@ -14,7 +15,10 @@ def test_full_workflow(client):
     token = login_response.json()["token"]
 
     # Upload Resume
-    with open("test_resume.pdf", "rb") as file:
+    file_path = os.path.join(os.path.dirname(__file__), "test_resume.pdf")  # Ensure correct file path
+    assert os.path.exists(file_path), f"Test file not found: {file_path}"
+
+    with open(file_path, "rb") as file:
         upload_response = client.post("/api/resume-upload", files={"resume_file": file},
                                       headers={"Authorization": f"Bearer {token}"})
     assert upload_response.status_code == 200
