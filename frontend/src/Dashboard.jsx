@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import "./App.css";
+import jsPDF from "jspdf";
 
 const Dashboard = () => {
   const token = localStorage.getItem("access_token");
@@ -11,18 +12,21 @@ const Dashboard = () => {
     return <Navigate to="/login" />;
   }
 
-  // State for fitScore, matchedSkills, unmatchedSkills, and improvementSuggestions
-
+  // States
   const [fitScore, setFitScore] = useState(null);
   const [matchedSkills, setMatchedSkills] = useState([]);
   const [unmatchedSkills, setUnmatchedSkills] = useState([]);
-  const [improvementSuggestions, setImprovementSuggestions] = useState([]);
+  const [improvementSuggestions, setImprovementSuggestions] = useState({
+    skills: [],
+    experience: [],
+  });
   const [resumeText, setResumeText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // Fetch data from the backend (current analysis data)
+  // Fetch current data
   useEffect(() => {
     const fetchCurrentData = async () => {
       try {
@@ -30,7 +34,7 @@ const Dashboard = () => {
         const response = await fetch("http://localhost:8000/api/current-data", {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -40,14 +44,13 @@ const Dashboard = () => {
 
         const data = await response.json();
         if (data.status === "incomplete") {
-          throw new Error("Incomplete analysis data. Resume or Job Description is missing.");
+          throw new Error(
+            "Incomplete analysis data. Resume or Job Description is missing."
+          );
         }
 
         setResumeText(data.resume);
         setJobDescription(data.job_description);
-        //Debugging
-      console.log("Fetched Resume Text:", data.resume);
-      console.log("Fetched Job Description:", data.job_description);
       } catch (error) {
         console.error("Error fetching current data:", error);
         setError(error.message);
@@ -59,23 +62,26 @@ const Dashboard = () => {
     fetchCurrentData();
   }, [token]);
 
-  // Fetch analysis data based on resume and job description
+  // Fetch analysis data
   useEffect(() => {
     if (resumeText && jobDescription) {
       const fetchAnalysisData = async () => {
         try {
           setLoading(true);
-          const response = await fetch("http://localhost:8000/api/calculate-fit", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              resume_text: resumeText,  // Use actual resume text from backend
-              job_description: jobDescription,  // Use actual job description from backend
-            }),
-          });
+          const response = await fetch(
+            "http://localhost:8000/api/calculate-fit",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                resume_text: resumeText,
+                job_description: jobDescription,
+              }),
+            }
+          );
 
           if (!response.ok) {
             const errorDetails = await response.text();
@@ -85,9 +91,9 @@ const Dashboard = () => {
 
           const data = await response.json();
           setFitScore(data.fit_score);
-          setMatchedSkills(data.matched_keywords); // Matched skills from backend
-          setUnmatchedSkills(data.unmatched_keywords); // Unmatched skills from backend
-          setImprovementSuggestions(data.feedback); // Improvement suggestions from backend
+          setMatchedSkills(data.matched_keywords);
+          setUnmatchedSkills(data.unmatched_keywords);
+          setImprovementSuggestions(data.feedback);
         } catch (error) {
           console.error("Error fetching analysis data:", error);
           setError(error.message);
@@ -99,6 +105,58 @@ const Dashboard = () => {
       fetchAnalysisData();
     }
   }, [resumeText, jobDescription, token]);
+
+  // Generate PDF
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Resume Analysis Report", 10, 10);
+
+    doc.setFontSize(12);
+    doc.text(`Fit Score: ${fitScore !== null ? `${fitScore}%` : "N/A"}`, 10, 30);
+
+    doc.setFontSize(14);
+    doc.text("Matched Keywords:", 10, 50);
+    matchedSkills.forEach((skill, index) => {
+      doc.text(`- ${skill}`, 10, 60 + index * 10);
+    });
+
+    doc.text("Improvement Suggestions:", 10, 80 + matchedSkills.length * 10);
+    const allFeedback = [
+      ...improvementSuggestions.skills,
+      ...improvementSuggestions.experience,
+    ];
+    allFeedback.forEach((item, index) => {
+      doc.text(`- ${item}`, 10, 90 + matchedSkills.length * 10 + index * 10);
+    });
+
+    doc.save("Resume_Analysis_Report.pdf");
+  };
+
+  // Filter feedback
+  const changeFeedback = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
+  const renderFeedback = () => {
+    let categoryFeedback = [];
+    if (selectedCategory === "skills") {
+      categoryFeedback = improvementSuggestions.skills;
+    } else if (selectedCategory === "experience") {
+      categoryFeedback = improvementSuggestions.experience;
+    } else {
+      categoryFeedback = [
+        ...improvementSuggestions.skills,
+        ...improvementSuggestions.experience,
+      ];
+    }
+
+    return categoryFeedback.map((item, index) => (
+      <li className="feedback" key={index}>
+        {item}
+      </li>
+    ));
+  };
 
   // Loading state
   if (loading) {
@@ -123,7 +181,7 @@ const Dashboard = () => {
         <p>{fitScore}%</p>
       </section>
 
-      {/* Matched Skills and Keywords */}
+      {/* Matched Skills */}
       <section className="dashboard-section">
         <h2>Skills and Keywords Matched</h2>
         <ul className="list">
@@ -139,7 +197,7 @@ const Dashboard = () => {
         </ul>
       </section>
 
-      {/* Unmatched Skills and Keywords */}
+      {/* Unmatched Skills */}
       <section className="dashboard-section">
         <h2>Skills and Keywords Not Matched</h2>
         <ul className="list">
@@ -158,18 +216,18 @@ const Dashboard = () => {
       {/* Improvement Suggestions */}
       <section className="dashboard-section">
         <h2>Improvement Suggestions</h2>
-        <ul className="list">
-          {improvementSuggestions.length > 0 ? (
-            improvementSuggestions.map((suggestion, index) => (
-              <li key={index} className="list-item">
-                {suggestion}
-              </li>
-            ))
-          ) : (
-            <li>No suggestions available</li>
-          )}
-        </ul>
+        <label htmlFor="filter">Filter Feedback by Category: </label>
+        <select id="filter" value={selectedCategory} onChange={changeFeedback}>
+          <option value="all">All</option>
+          <option value="skills">Skills</option>
+          <option value="experience">Experience</option>
+        </select>
+        <ul>{renderFeedback()}</ul>
       </section>
+
+      <button onClick={generatePDF} className="download-btn">
+        Download PDF Report
+      </button>
     </div>
   );
 };
