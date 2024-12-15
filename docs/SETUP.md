@@ -4,12 +4,15 @@ git clone https://github.com/Zarrar5/resume_analyzer_documentation.git
 
 Backend
 2)  cd resume_analyzer_documentation/backend
+    Requires Python version: 3.10
     pip install -r requirements.txt
 
     run using fastapi run app.py or [uvicorn app:app --reload]
 
 Frontend
 3) Open another terminal and cd ../frontend
+    node version: v20.10.0
+    npm version: 10.8.2
     npm install
     If the command above command does not work, then do the following:
     npm install vite --save-dev

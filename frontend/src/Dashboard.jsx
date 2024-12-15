@@ -12,6 +12,7 @@ const Dashboard = () => {
   }
 
   // State for fitScore, matchedSkills, unmatchedSkills, and improvementSuggestions
+
   const [fitScore, setFitScore] = useState(null);
   const [matchedSkills, setMatchedSkills] = useState([]);
   const [unmatchedSkills, setUnmatchedSkills] = useState([]);
