@@ -163,10 +163,10 @@ const Dashboard = () => {
     ));
   };
 
-  // Loading state
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  // // Loading state
+  // if (loading) {
+  //   return <p>Loading...</p>;
+  // }
 
   // Error state
   if (error) {

@@ -156,8 +156,8 @@ function App() {
             />
             <Route
               path="/resume-upload"
-              element= {<ResumeUpload />}
-              //element={isLoggedIn ? <ResumeUpload /> : <Navigate to="/login" />}
+              //element= {<ResumeUpload />}
+              element={isLoggedIn ? <ResumeUpload /> : <Navigate to="/login" />}
             />
             <Route
               path="/current-data"
