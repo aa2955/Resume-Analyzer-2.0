@@ -50,14 +50,15 @@ const Register = () => {
   };
 
   return (
-    <div class="container">
+    <div className="container">
       <h2>Register</h2>
       {loading && <LoadingSpinner />}
       <form onSubmit={handleRegister}>
-        <label>
+        <label htmlFor="username">
           Username:
-          <br></br>
+          <br />
           <input
+            id="username"
             type="text"
             placeholder="Username"
             value={username}
@@ -66,10 +67,11 @@ const Register = () => {
           />
         </label>
         <br />
-        <label>
+        <label htmlFor="email">
           Email:
-          <br></br>
+          <br />
           <input
+            id="email"
             type="email"
             placeholder="Email"
             value={email}
@@ -78,10 +80,11 @@ const Register = () => {
           />
         </label>
         <br />
-        <label>
+        <label htmlFor="password">
           Password:
-          <br></br>
+          <br />
           <input
+            id="password"
             type="password"
             placeholder="Password"
             value={password}
@@ -90,10 +93,11 @@ const Register = () => {
           />
         </label>
         <br />
-        <label>
+        <label htmlFor="confirm-password">
           Confirm Password:
-          <br></br>
+          <br />
           <input
+            id="confirm-password"
             type="password"
             placeholder="Confirm Password"
             value={confirmPassword}

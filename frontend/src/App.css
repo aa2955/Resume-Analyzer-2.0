@@ -1,126 +1,183 @@
-/* Ensures everything is centered except the navbar */
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 100%;
+/* General Body Styling */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
 }
 
-/* Loading spinner */
-.loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed; /* Keeps spinner centered while other content is centered */
+/* Navigation Bar Styling */
+.navbar {
+  position: fixed;
   top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.8); /* Optional: Add a light overlay */
+  height: 60px;
+  background: linear-gradient(90deg, #76c7c0, #34a0a4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
-.spinner {
-  border: 4px solid black;
-  border-top: 4px solid green;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  max-width: 1200px;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Heading styles */
-h1 {
-  color: wheat;
-  background-color: azure;
-  text-align: center;
-  font-size: 35px;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
-
-h2 {
-  color: darkmagenta;
-  font-size: 40px;
-}
-
-/* Background and general layout */
-html {
-  background-image: url("images/background.jpg");
-  background-size: cover;
-  height: 100%;
-}
-
-/* Button styles */
-button {
-  background-color: antiquewhite;
-  font-size: 30px;
-  color: blueviolet;
-  border-radius: 0%;
-  border: none;
-}
-
-/* List item styles */
-li {
-  list-style-type: none;
-  padding-top: 0px;
-  margin: 10px;
-  font-size: 30px;
+.navbar-logo {
+  font-size: 1.5rem;
+  color: white;
   text-decoration: none;
-  display: inline-block;
-}
-
-/* Input field styles */
-input {
-  background-color: lightcoral;
-  font-size: 20px;
-}
-
-/* Label styles */
-label {
-  font-size: 30px;
-  color: darkred;
-}
-
-/* Message styles */
-.message {
-  font-size: 30px;
   font-weight: bold;
-  color: red;  
 }
 
-/* Logout button positioning */
-#logout {
-  float: right;
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-/* Navbar specific styles (assuming the navbar is a <nav> or other container) */
-nav {
-  position: relative;
-  /* Keep navbar in its original position */
+.navbar-menu li {
+  margin: 0 10px;
 }
 
-/* Progress bar container */
-.progress-bar-container {
-  width: 100%;
-  height: 20px;
-  background-color: #f3f3f3;
-  border-radius: 10px;
+.navbar-menu a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-menu a:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.navbar-button {
+  background-color: #ffc107;
+  color: black;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-button:hover {
+  background-color: #e0a800;
+}
+
+/* Main Content */
+.content {
+  margin-top: 80px; /* Adjust for fixed navbar */
+  padding: 20px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Hero Section */
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #76c7c0, #34a0a4);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.cta-button {
+  background: linear-gradient(90deg, #ff8c00, #ffae42);
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.cta-button a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.cta-button:hover {
+  background: linear-gradient(90deg, #ffae42, #ff8c00);
+  transform: scale(1.05);
+}
+
+/* Features Section */
+.features-section {
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.features-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Features Table */
+.features-table {
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   overflow: hidden;
-  margin: 10px 0;
 }
 
-/* Progress bar itself */
-.progress-bar {
-  height: 20px;
-  background-color: #4caf50;
-  transition: width 0.3s ease;
+.features-table thead {
+  background-color: #76c7c0;
+  color: white;
+}
+
+.features-table th,
+.features-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.features-table th {
+  font-size: 1.2rem;
+}
+
+.features-table tbody tr:hover {
+  background-color: #f0f0f0;
+}
+
+.features-table td {
+  color: #555;
+}
+
+.features-table tr:last-child td {
+  border-bottom: none;
 }

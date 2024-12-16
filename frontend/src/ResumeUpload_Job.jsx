@@ -118,6 +118,7 @@ const ResumeUpload = () => {
       <form onSubmit={handleResumeCheck}>
         <h2>Resume Upload</h2>
         <input
+          data-testid="resume-file-input"
           type="file"
           accept="application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={handleFileChange}
