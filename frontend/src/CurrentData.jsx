@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import LoadingSpinner from './LoadingSpinner';
+import { Navigate } from "react-router-dom";
 
 const CurrentData= () => {
     const [loading, setLoading] = useState(false);
@@ -7,6 +8,14 @@ const CurrentData= () => {
     const [dataFetch, setDataFetch]= useState(false);
     const [currentResume, setCurrentResume]= useState('');
     const [currentJobDescription, setCurrentJobDescription]= useState('');
+
+    const token = localStorage.getItem("access_token");
+    
+    console.log("Token in Dashboard:", token);
+
+    if (!token) {
+    return <Navigate to="/login" />;
+    }
 
     const fetchCurrentData= async (event) => {
         event.preventDefault();

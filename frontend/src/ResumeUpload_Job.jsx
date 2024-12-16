@@ -3,6 +3,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "./App.css";import LoadingSpinner from './LoadingSpinner';
+import { Navigate } from "react-router-dom";
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
 
@@ -17,6 +18,15 @@ const ResumeUpload = () => {
   const [isPDF, setIsPDF] = useState(false);
   const [isWORD, setIsWORD] = useState(false);
   const [docxPreview, setDocxPreview] = useState('');
+
+  const token = localStorage.getItem("access_token");
+  
+  console.log("Token in Dashboard:", token);
+
+  if (!token) {
+    return <Navigate to="/login" />;
+  }
+
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
