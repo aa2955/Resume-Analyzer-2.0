@@ -120,11 +120,12 @@ const ResumeUpload = () => {
         <input
           data-testid="resume-file-input"
           type="file"
-          accept="application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          id= "resume-file"
+          // accept="application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={handleFileChange}
           required
         />
-        <button type="submit">Submit Resume</button>
+        <button type="submit" id="resume-button">Submit Resume</button>
       </form>
       <form onSubmit={handleJobDescriptionSubmit}>
         <label>
