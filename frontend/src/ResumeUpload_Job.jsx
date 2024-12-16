@@ -135,7 +135,7 @@ const ResumeUpload = () => {
           <input
             type="file"
             id= "resume-file"
-            accept="application/pdf"
+            accept="application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             onChange={handleFileChange}
             required
           />
