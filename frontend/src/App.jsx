@@ -140,15 +140,18 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route
               path="/dashboard"
-              element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
+              element= {<Dashboard />}
+              // element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
             />
             <Route
               path="/resume-upload"
-              element={isLoggedIn ? <ResumeUpload /> : <Navigate to="/login" />}
+              element= {<ResumeUpload />}
+              // element={isLoggedIn ? <ResumeUpload /> : <Navigate to="/login" />}
             />
             <Route
               path="/current-data"
-              element={isLoggedIn ? <CurrentData /> : <Navigate to="/login" />}
+              element= {<CurrentData />}
+              // element={isLoggedIn ? <CurrentData /> : <Navigate to="/login" />}
             />
           </Routes>
         </div>

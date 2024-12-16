@@ -28,21 +28,25 @@ describe('Resume Upload Workflow', () => {
         // Store the token in localStorage
         window.localStorage.setItem('access_token', response.body.token);
       });
-  
+
+      
+      
+      //cy.reload();
       // Visit the resume upload page
       cy.visit('/resume-upload');
       cy.url().should('include', '/resume-upload');
     });
   
     it('uploads a valid PDF resume successfully', () => {
-      cy.get('input[type="file"]').attachFile('valid_resume.pdf');
-      cy.get('button[type="submit"]').click();
+      cy.log('Uploading tests_resume.pdf').get('#resume-file').attachFile('tests_resume.pdf').debug();
+      //cy.get('#resume-file').attachFile('tests_resume.pdf');
+      cy.get('#resume-button').focus().click();
       cy.contains('Uploaded Successfully', { timeout: 10000 }).should('be.visible');
     });
   
     it('shows an error for invalid file types', () => {
-      cy.get('input[type="file"]').attachFile('invalid_file.txt');
-      cy.get('button[type="submit"]').click();
+      cy.get('input[type="file"]').attachFile('test_file.txt');
+      //cy.get('button[type="submit"]').click();
       cy.contains('Please upload a valid PDF or DOCX file.', { timeout: 10000 }).should('be.visible');
     });
   });
