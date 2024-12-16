@@ -79,6 +79,7 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.removeItem("access_token");
+    return <Navigate to="/" />
   };
 
   const toggleDarkMode = () => {
