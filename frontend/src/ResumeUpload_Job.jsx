@@ -1,124 +1,105 @@
 import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import mammoth from "mammoth";
+import "react-pdf/dist/esm/Page/TextLayer.css";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "./App.css";import LoadingSpinner from './LoadingSpinner';
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+
 const ResumeUpload = () => {
   const [resumeFile, setResumeFile] = useState(null);
   const [charCount, setCharCount] = useState(0);
   const [jobDescription, setJobDescription] = useState('');
   const [message, setMessage] = useState('');
-  const [resumeCheck, setResumeCheck]= useState(false);
-  const [preview, setPreview]= useState(true);
-  const [loading, setLoading] = useState(false);  
-  const [isPDF, setIsPDF]= useState(false);
-  const [isWORD, setIsWORD]= useState(false);
-  const [docxPreview, setDocxPreview] = useState("");
-
-  const handleDocxPreview = async (file) => {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-        const arrayBuffer = e.target.result;
-        const { value } = await mammoth.extractRawText({ arrayBuffer });
-        setDocxPreview(value);
-    };
-    reader.readAsArrayBuffer(file);
-  };
+  const [resumeCheck, setResumeCheck] = useState(false);
+  const [preview, setPreview] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [isPDF, setIsPDF] = useState(false);
+  const [isWORD, setIsWORD] = useState(false);
+  const [docxPreview, setDocxPreview] = useState('');
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file && (file.type === 'application/pdf' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
+      setIsPDF(file.type === 'application/pdf');
+      setIsWORD(file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
-        if (file.type === 'application/pdf'){
-          setIsPDF(true);
-          setIsWORD(false);
-        }
-        if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-          setIsWORD(true);
-          setIsPDF(false);
-        }
-        const fileSize= file.size/ (1024*1024);
+      const fileSize = file.size / (1024 * 1024);
+      if (fileSize > 2) {
+        setMessage('File Larger Than 2MB');
+        setResumeCheck(false);
+        setResumeFile(null);
+        return;
+      }
 
-        if(fileSize > 2){
-          setMessage('File Larger Than 2MB');
-          setResumeCheck(false);
-          setResumeFile(null);
-          return;
-        }
-        else{
-          setResumeCheck(true);
-          setResumeFile(file);
-          setPreview(true);
-          setMessage('');
-        }
-    } 
-    else {
-      alert('Please upload a valid PDF or DOCX file.');
+      setResumeCheck(true);
+      setResumeFile(file);
+      setPreview(true);
+      setMessage('');
+    } else {
+      setMessage('Please upload a valid PDF or DOCX file.');
       setResumeFile(null);
       setResumeCheck(false);
     }
   };
 
-  const handleCharCount = (e) =>{
-    e.preventDefault();
-
-    if (charCount <5000){
-      setJobDescription(e.target.value);
-      setCharCount(e.target.value.length);
-
-      if(charCount >= 4000){
-        setMessage('Max Char almost reached!!!');
-      }
-      else{
-        setMessage('');
-      }
-    }
-    else{
+  const handleCharCount = (e) => {
+    const text = e.target.value;
+    if (text.length <= 5000) {
+      setJobDescription(text);
+      setCharCount(text.length);
+      setMessage(text.length >= 4000 ? 'Max Char almost reached!!!' : '');
+    } else {
       setMessage('Max Char Limit Reached');
     }
   };
 
-  const handleClick= (e) =>{
-    e.preventDefault();
+  const handleClear = () => {
     setCharCount(0);
     setJobDescription('');
   };
 
+
+  const handleFileDrop = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    handleFileChange({ target: { files: [file] } });
+  };
+
   const handleResumeCheck = async (event) => {
     event.preventDefault();
-    setLoading(true); // Set loading to true at the start
+    setLoading(true);
     try {
-        if (resumeCheck) {
-            const formData = new FormData();
-            formData.append('resume_file', resumeFile);
+      if (resumeCheck) {
+        const formData = new FormData();
+        formData.append('resume_file', resumeFile);
 
-            const response = await fetch('http://127.0.0.1:8000/api/resume-upload', {
-                method: 'POST',
-                body: formData,
-            });
+        const response = await fetch('http://127.0.0.1:8000/api/resume-upload', {
+          method: 'POST',
+          body: formData,
+        });
 
-            if (response.ok) {
-                const data = await response.json();
-                setPreview(false);
-                setMessage('Uploaded Successfully');
-            } else {
-                const errorData = await response.json();
-                setMessage(errorData.detail || 'Failed to send data');
-            }
+        if (response.ok) {
+          const data = await response.json();
+          setPreview(false);
+          setMessage('Uploaded Successfully');
         } else {
-            throw new Error("Invalid File");
+          const errorData = await response.json();
+          setMessage(errorData.detail || 'Failed to upload resume.');
         }
+      } else {
+        throw new Error('Invalid File');
+      }
     } catch (error) {
-        setMessage('An error occurred: ' + error.message);
+      setMessage('An error occurred: ' + error.message);
     } finally {
-        setLoading(false); // Ensure loading is set to false when the operation finishes
+      setLoading(false);
     }
-};
+  };
 
-  const handleJobDescription= async (event) =>{
+  const handleJobDescriptionSubmit = async (event) => {
     event.preventDefault();
-
-    try{
+    try {
       const response = await fetch('http://127.0.0.1:8000/api/job-description', {
         method: 'POST',
         headers: {
@@ -127,79 +108,53 @@ const ResumeUpload = () => {
         body: JSON.stringify({ job_description: jobDescription }),
       });
 
-      if(response.ok){
-        const data= await response.json();
+      if (response.ok) {
+        const data = await response.json();
         setMessage(data.message);
-      }
-      else{
+      } else {
         const errorData = await response.json();
-        setMessage(errorData.detail || 'Failed to send data');
+        setMessage(errorData.detail || 'Failed to submit job description.');
       }
-    }
-    catch (error){
-      setMessage('An error occurred: '+ error.message);
+    } catch (error) {
+      setMessage('An error occurred: ' + error.message);
     }
   };
 
   return (
-    <div>
-      {loading && <LoadingSpinner/>} 
+    <div className="resume-upload-container">
+      {loading && <LoadingSpinner />}
       <form onSubmit={handleResumeCheck}>
-      <h2>Resume Upload</h2>
-      <input type="file" 
-      accept="application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      onChange={handleFileChange} 
-      required/>
-
-      <button type="submit">Submit Resume</button>
-      </form>
-      {resumeFile && preview && isPDF &&(
-          <div>
-              <h3>File Preview:</h3>
-              <Document
-                  file={URL.createObjectURL(resumeFile)}
-                  onLoadSuccess={() => setMessage("File loaded successfully.")}
-                  onLoadError={(error) =>
-                      setMessage("Failed to load: " + error.message)
-                  }
-              >
-                <Page pageNumber={1} />
-              </Document>
-          </div>
-      )}
-
-      {resumeFile && preview && isWORD &&(
-        <div>
-          <h3>File Preview:</h3>
-          <div>
-              <button onClick={() => handleDocxPreview(resumeFile)}>
-                  Load Word Preview
-              </button>
-              <div style={{ whiteSpace: "pre-wrap" }}>{docxPreview}</div>
-          </div>
+        <h2>Resume Upload</h2>
+        <div
+          className="drop-area"
+          onDrop={handleFileDrop}
+          onDragOver={(e) => e.preventDefault()}
+        >
+          <p>Drag and drop your PDF here</p>
+          <p>or</p>
+          <input
+            type="file"
+            id= "resume-file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+            required
+          />
         </div>
-      )}
-
-      <br/>
-      <br/>
-      {loading && <LoadingSpinner/>} 
-      <form onSubmit={handleJobDescription}>
-      <label>
-        Job Description
-        <br></br>
-        <textarea
-          id= "jobDescription"
-          name="jobDescription"
-          value= {jobDescription}
-          rows={5}
-          onChange={handleCharCount}
-          required
-        />
-      </label>
-      <p>Character Count: {charCount}/5000</p>
-
-      <button type='submit'>Submit Job Description</button>
-      <button onClick={handleClick}>Clear</button>
+        <button type="submit" id="resume-button">Submit Resume</button>
+      </form>
+      <form onSubmit={handleJobDescriptionSubmit}>
+        <label>
+          Job Description
+          <textarea
+            value={jobDescription}
+            rows={5}
+            onChange={handleCharCount}
+            required
+          />
+        </label>
+        <p>Character Count: {charCount}/5000</p>
+        <button type="submit">Submit Job Description</button>
+        <button type="button" onClick={handleClear}>Clear</button>
       </form>
       <p className="message">{message}</p>
     </div>

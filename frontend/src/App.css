@@ -1,84 +1,427 @@
-.loading-spinner {
+/* ============================================================
+   Global Styling
+============================================================ */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif; /* A modern and clean Google Font */
+  background: linear-gradient(180deg, #f0f9ff, #e0f7fa); /* Light gradient background */
+  color: #333;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  position: fixed; /* Ensures it's positioned relative to the viewport */
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ============================================================
+   Navigation Bar
+============================================================ */
+.navbar {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.8); /* Optional: Add a light overlay */
+  height: 70px; /* Slightly taller for aesthetics */
+  background: linear-gradient(90deg, #76c7c0, #1d3557);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
+  z-index: 10;
 }
 
-.spinner {
-  border: 4px solid black;
-  border-top: 4px solid green;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  max-width: 1200px;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+.navbar-logo {
+  font-size: 1.8rem;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0px 3px 5px rgba(0, 0, 0, 0.3); /* Text glow */
 }
 
-h1 {
-  color:wheat;
-  background-color: azure;
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-menu li {
+  margin: 0 10px;
+}
+
+.navbar-menu a {
+  color: white;
+  font-size: 1rem;
+  padding: 12px 18px;
+  border-radius: 25px; /* Rounded buttons */
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.2); /* Subtle background for links */
+}
+
+.navbar-menu a:hover {
+  background: rgba(255, 255, 255, 0.4); /* Slightly brighter on hover */
+  transform: scale(1.1); /* Enlarge on hover */
+}
+
+.navbar-button {
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navbar-button:hover {
+  background-color: #ff8a65; /* Softer hover color */
+  transform: scale(1.1);
+}
+
+/* ============================================================
+   Main Content Layout
+============================================================ */
+.content {
+  margin-top: 100px; /* Push content below navbar */
+  padding: 40px 30px;
+  width: 90%;
+  max-width: 900px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Softer shadow */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  font-size: 75px;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  animation: fadeIn 1s ease; /* Smooth entrance animation */
 }
 
-h2{
-  color:darkmagenta;
-  font-size: 40px;
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-html {
-  background-image: url("images/background.jpg");
-  background-size: cover;
-  height: 100%;
+/* ============================================================
+   Homepage - Hero Section
+============================================================ */
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1d3557, #457b9d);
+  color: white;
+  padding: 120px 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  animation: slideIn 1s ease; /* Slide-in animation */
 }
 
-button{
-  background-color: antiquewhite;
-  font-size: larger;
-  color:blueviolet;
-  border-radius: 20%;
+/* Slide-in Animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.hero-section p {
+  font-size: 1.3rem;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.cta-button {
+  background: linear-gradient(90deg, #ff6f61, #ff8a65);
+  border: none;
+  padding: 15px 50px;
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+  border-radius: 30px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  background: linear-gradient(90deg, #ff8a65, #ff6f61);
+  transform: scale(1.1);
+}
+
+/* ============================================================
+   Features Section
+============================================================ */
+.features-section {
+  margin: 50px auto;
+  padding: 50px 30px;
+  background: linear-gradient(135deg, #e63946, #f1faee);
+  text-align: center;
+  border-radius: 15px;
+  color: #1d3557;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.features-section h2 {
+  font-size: 2.8rem;
+  margin-bottom: 30px;
+  color: #1d3557;
+}
+
+.features-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.features-table thead {
+  background-color: #1d3557;
+  color: white;
+}
+
+.features-table th,
+.features-table td {
+  padding: 20px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.features-table tbody tr:hover {
+  background-color: #f1faee;
+}
+
+/* ============================================================
+   Dashboard - Feedback Cards
+============================================================ */
+.feedback-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.feedback-card {
+  flex: 1 1 calc(50% - 25px);
+  background: linear-gradient(135deg, #457b9d, #a8dadc);
+  border-radius: 15px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  padding: 25px;
+  color: white;
+  text-align: left;
+}
+
+.feedback-card h3 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #1d3557;
+}
+
+/* ============================================================
+   Resume Upload - Drag and Drop Area
+============================================================ */
+.drop-area {
+  border: 2px dashed #457b9d;
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  background: #f1faee;
+  margin-bottom: 25px;
+  transition: all 0.3s ease;
+}
+
+.drop-area:hover {
+  background: #e63946;
+  color: white;
+  border-color: white;
+}
+
+.resume-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dropdown Styles */
+.dropdown {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown summary {
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.dropdown ul {
+  margin: 10px 0 0 20px;
+  list-style-type: disc;
+  color: #555;
+}
+
+.dropdown ul li {
+  margin-bottom: 5px;
+}
+
+/* ============================================================
+   Dark Mode Styling (Vibrant and Cool Colors)
+============================================================ */
+body.dark-mode {
+  background: linear-gradient(180deg, #121212, #1a237e); /* Cool dark blue gradient */
+  color: #e3f2fd; /* Soft blue text for readability */
+}
+
+body.dark-mode .navbar {
+  background: linear-gradient(90deg, #0d47a1, #1e88e5); /* Vibrant blue gradient */
+  border-bottom: 1px solid #5c6bc0; /* Subtle border for separation */
+}
+
+body.dark-mode .navbar a {
+  color: #bbdefb; /* Light blue for links */
+}
+
+body.dark-mode .navbar-button {
+  background-color: #3949ab;
+  color: #e3f2fd;
+  border: 1px solid #5c6bc0; /* Blue border for buttons */
+}
+
+body.dark-mode .navbar-button:hover {
+  background-color: #536dfe; /* Bright hover effect */
+  color: #ffffff; /* Contrast on hover */
+}
+
+body.dark-mode .content {
+  background: linear-gradient(180deg, #1e1e2e, #283593); /* Blue gradient for content */
+  border: 1px solid #3949ab;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .cta-button {
+  background: linear-gradient(90deg, #29b6f6, #26c6da); /* Vibrant cyan gradient */
+  color: #ffffff;
   border: none;
 }
 
-li {
-  list-style-type: none;
-  padding-top: 0px;
-  margin: 10px;
-  font-size: 30px;
-  text-decoration: none;
-  display: inline-block;
+body.dark-mode .cta-button:hover {
+  background: linear-gradient(90deg, #26c6da, #29b6f6);
+  transform: scale(1.05);
 }
 
-input{
-  background-color: lightcoral;
-  font-size: 20px;
-}
-label{
-  font-size: 30px;
-  color: darkred;
+body.dark-mode .hero-section {
+  background: linear-gradient(135deg, #283593, #1e88e5); /* Cool blue gradient */
+  color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
-.message{
-  font-size: 30px;
-  font-weight: bold;
-  color: red;  
+body.dark-mode .features-section {
+  background: linear-gradient(135deg, #0d47a1, #2196f3); /* Vibrant blue gradient */
+  color: #e3f2fd;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6); /* More prominent shadow */
 }
 
-#logout{
-  float: right;
+body.dark-mode .features-table {
+  background: #1e1e2e; /* Slightly muted table background */
+  border: 1px solid #3949ab;
+  color: #bbdefb;
+}
+
+body.dark-mode .features-table thead {
+  background: #283593;
+  color: #ffffff;
+}
+
+body.dark-mode .dropdown {
+  background-color: #1a237e; /* Rich dark blue for dropdowns */
+  border-color: #3949ab;
+  color: #e3f2fd;
+}
+
+body.dark-mode .dropdown ul {
+  color: #bbdefb;
+}
+
+body.dark-mode .feedback-card {
+  background: linear-gradient(135deg, #283593, #3949ab); /* Subtle gradient for feedback cards */
+  color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .drop-area {
+  background: linear-gradient(180deg, #1e1e2e, #283593); /* Gradient for drag area */
+  border-color: #3949ab;
+  color: #bbdefb;
+}
+
+body.dark-mode .drop-area:hover {
+  background: linear-gradient(180deg, #283593, #3949ab); /* Vibrant hover effect */
+  border-color: #536dfe;
+}
+
+/* ============================================================
+   Enhanced Toggle Button for Dark Mode
+============================================================ */
+.dark-mode-toggle {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  background: linear-gradient(90deg, #3949ab, #536dfe); /* Vibrant toggle button */
+  color: #ffffff;
+  font-size: 1.8rem;
+  border-radius: 50%;
+  padding: 12px 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.dark-mode-toggle:hover {
+  background: linear-gradient(90deg, #536dfe, #3949ab);
+}
+
+body.dark-mode .dark-mode-toggle {
+  background: linear-gradient(90deg, #1a237e, #283593);
+  color: #e3f2fd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .dark-mode-toggle:hover {
+  background: linear-gradient(90deg, #283593, #1a237e);
 }

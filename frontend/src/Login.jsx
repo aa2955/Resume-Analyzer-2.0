@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { Navigate } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import LoadingSpinner from './LoadingSpinner';  
+import LoadingSpinner from './LoadingSpinner';
 
-const Login = ({onLoginSuccess}) => {
+const Login = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);  
-  const navigate= useNavigate();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   const handleLogin = async (event) => {
     event.preventDefault();
-
-    setLoading(true);  
+    setLoading(true);
 
     try {
       const response = await fetch('http://127.0.0.1:8000/api/login', {
@@ -26,7 +25,7 @@ const Login = ({onLoginSuccess}) => {
         }),
       });
 
-      setLoading(false); 
+      setLoading(false);
 
       if (response.ok) {
         const data = await response.json();
@@ -34,14 +33,13 @@ const Login = ({onLoginSuccess}) => {
         localStorage.setItem('access_token', token);
         setMessage('Login successful');
         onLoginSuccess();
-        navigate('/', {state: {message: 'Login Successful'}});
-
+        navigate('/', { state: { message: 'Login Successful' } });
       } else {
         const errorData = await response.json();
         setMessage(errorData.detail || 'Invalid username or password');
       }
     } catch (error) {
-      setLoading(false);  
+      setLoading(false);
       setMessage('An error occurred: ' + error.message);
     }
   };
@@ -49,12 +47,13 @@ const Login = ({onLoginSuccess}) => {
   return (
     <div>
       <h2>Login</h2>
-      {loading && <LoadingSpinner/>} 
-      <form onSubmit={handleLogin}>
-        <label>
+      {loading && <LoadingSpinner />}
+      <form className="container" onSubmit={handleLogin}>
+        <label htmlFor="username">
           Username:
-          <br></br>
+          <br />
           <input
+            id="username"
             type="text"
             placeholder="Username"
             value={username}
@@ -63,10 +62,11 @@ const Login = ({onLoginSuccess}) => {
           />
         </label>
         <br />
-        <label>
+        <label htmlFor="password">
           Password:
-          <br></br>
+          <br />
           <input
+            id="password"
             type="password"
             placeholder="Password"
             value={password}
