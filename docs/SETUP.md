@@ -24,3 +24,7 @@ Frontend
     run using npm run dev
 
 3) open the local site 
+
+Unit Test
+1) Frontend unit test: npx cypress run
+2) Backend unit test: pytest

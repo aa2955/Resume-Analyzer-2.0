@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import mammoth from 'mammoth';
-import LoadingSpinner from './LoadingSpinner';
+import "react-pdf/dist/esm/Page/TextLayer.css";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "./App.css";import LoadingSpinner from './LoadingSpinner';
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
 
@@ -56,6 +57,13 @@ const ResumeUpload = () => {
   const handleClear = () => {
     setCharCount(0);
     setJobDescription('');
+  };
+
+
+  const handleFileDrop = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    handleFileChange({ target: { files: [file] } });
   };
 
   const handleResumeCheck = async (event) => {
@@ -113,18 +121,25 @@ const ResumeUpload = () => {
   };
 
   return (
-    <div className="container">
+    <div className="resume-upload-container">
       {loading && <LoadingSpinner />}
       <form onSubmit={handleResumeCheck}>
         <h2>Resume Upload</h2>
-        <input
-          data-testid="resume-file-input"
-          type="file"
-          id= "resume-file"
-          // accept="application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          onChange={handleFileChange}
-          required
-        />
+        <div
+          className="drop-area"
+          onDrop={handleFileDrop}
+          onDragOver={(e) => e.preventDefault()}
+        >
+          <p>Drag and drop your PDF here</p>
+          <p>or</p>
+          <input
+            type="file"
+            id= "resume-file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+            required
+          />
+        </div>
         <button type="submit" id="resume-button">Submit Resume</button>
       </form>
       <form onSubmit={handleJobDescriptionSubmit}>

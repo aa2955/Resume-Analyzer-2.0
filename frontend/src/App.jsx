@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
-import Login from './Login';
-import Register from './Register';
-import Dashboard from './Dashboard';
-import ResumeUpload from './ResumeUpload_Job';
-import CurrentData from './CurrentData';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import Login from "./Login";
+import Register from "./Register";
+import Dashboard from "./Dashboard";
+import ResumeUpload from "./ResumeUpload_Job";
+import CurrentData from "./CurrentData";
+import "./App.css";
 
 const HomePage = () => (
   <div className="homepage">
@@ -74,14 +74,20 @@ const HomePage = () => (
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem('access_token');
+    localStorage.removeItem("access_token");
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    document.body.classList.toggle("dark-mode", !darkMode);
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (token) {
       setIsLoggedIn(true);
     }
@@ -132,6 +138,11 @@ function App() {
           </div>
         </nav>
 
+        {/* Dark Mode Toggle */}
+        <div className="dark-mode-toggle" onClick={toggleDarkMode}>
+          {darkMode ? "🌞" : "🌙"}
+        </div>
+
         {/* Main Content */}
         <div className="content">
           <Routes>
@@ -146,7 +157,7 @@ function App() {
             <Route
               path="/resume-upload"
               element= {<ResumeUpload />}
-              // element={isLoggedIn ? <ResumeUpload /> : <Navigate to="/login" />}
+              //element={isLoggedIn ? <ResumeUpload /> : <Navigate to="/login" />}
             />
             <Route
               path="/current-data"

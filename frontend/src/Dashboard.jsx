@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import "./App.css";
 import jsPDF from "jspdf";
+import LoadingSpinner from "./LoadingSpinner";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard = () => {
   const token = localStorage.getItem("access_token");
@@ -168,36 +173,45 @@ const Dashboard = () => {
     return <p>Error: {error}</p>;
   }
 
+  const pieData = {
+    labels: ["Fit Score", "Remaining"],
+    datasets: [
+      {
+        data: [fitScore, 100 - fitScore],
+        backgroundColor: ["#4caf50", "#e0e0e0"],
+        hoverBackgroundColor: ["#66bb6a", "#f5f5f5"],
+      },
+    ],
+  };
+
   return (
     <div className="dashboard-container">
       <h1 className="dashboard-title">Resume Analysis Dashboard</h1>
+      {loading && <LoadingSpinner />}
 
-      {/* Resume Fit Score */}
+      {/* Fit Score Visualization */}
       <section className="dashboard-section">
         <h2>Resume Fit Score</h2>
-        <div className="progress-bar-container">
-          <div className="progress-bar" style={{ width: `${fitScore}%` }}></div>
-        </div>
-        <p>{fitScore}%</p>
+        <Pie data={pieData} />
+        <p>{fitScore !== null ? `Fit Score: ${fitScore}%` : "Data not available"}</p>
       </section>
 
-      {/* Matched Skills */}
+      {/* Matched Skills Dropdown */}
       <section className="dashboard-section">
-        <h2>Skills and Keywords Matched</h2>
-        <ul className="list">
-          {matchedSkills.length > 0 ? (
-            matchedSkills.map((skill, index) => (
+        <h2>Matched Skills</h2>
+        <details className="dropdown">
+          <summary>View Matched Skills</summary>
+          <ul className="list">
+            {matchedSkills.map((skill, index) => (
               <li key={index} className="list-item">
                 {skill}
               </li>
-            ))
-          ) : (
-            <li>No matched skills</li>
-          )}
-        </ul>
+            ))}
+          </ul>
+        </details>
       </section>
 
-      {/* Unmatched Skills */}
+      {/* Unmatched Skills
       <section className="dashboard-section">
         <h2>Skills and Keywords Not Matched</h2>
         <ul className="list">
@@ -211,7 +225,7 @@ const Dashboard = () => {
             <li>No unmatched skills</li>
           )}
         </ul>
-      </section>
+      </section> */}
 
       {/* Improvement Suggestions */}
       <section className="dashboard-section">
