@@ -111,32 +111,48 @@ const Dashboard = () => {
     }
   }, [resumeText, jobDescription, token]);
 
-  // Generate PDF
   const generatePDF = () => {
     const doc = new jsPDF();
+    const pageHeight = doc.internal.pageSize.height;
+    const lineHeight = 10; // Space between lines
+    const marginTop = 10;
+    let cursorY = marginTop;
+  
+    const addText = (text) => {
+      if (cursorY + lineHeight > pageHeight - marginTop) {
+        doc.addPage(); // Add a new page
+        cursorY = marginTop; // Reset cursor to top
+      }
+      doc.text(text, 10, cursorY);
+      cursorY += lineHeight; // Move cursor down
+    };
+  
+    // Title
     doc.setFontSize(16);
-    doc.text("Resume Analysis Report", 10, 10);
-
+    addText("Resume Analysis Report");
+  
+    // Fit Score
     doc.setFontSize(12);
-    doc.text(`Fit Score: ${fitScore !== null ? `${fitScore}%` : "N/A"}`, 10, 30);
-
+    addText(`Fit Score: ${fitScore !== null ? `${fitScore}%` : "N/A"}`);
+  
+    // Matched Keywords
     doc.setFontSize(14);
-    doc.text("Matched Keywords:", 10, 50);
-    matchedSkills.forEach((skill, index) => {
-      doc.text(`- ${skill}`, 10, 60 + index * 10);
-    });
-
-    doc.text("Improvement Suggestions:", 10, 80 + matchedSkills.length * 10);
+    addText("Matched Keywords:");
+    doc.setFontSize(12);
+    matchedSkills.forEach((skill) => addText(`- ${skill}`));
+  
+    // Improvement Suggestions
+    addText("Improvement Suggestions:");
     const allFeedback = [
       ...improvementSuggestions.skills,
       ...improvementSuggestions.experience,
     ];
-    allFeedback.forEach((item, index) => {
-      doc.text(`- ${item}`, 10, 90 + matchedSkills.length * 10 + index * 10);
-    });
-
+    allFeedback.forEach((item) => addText(`- ${item}`));
+  
+    // Save the PDF
     doc.save("Resume_Analysis_Report.pdf");
   };
+  
 
   // Filter feedback
   const changeFeedback = (e) => {
