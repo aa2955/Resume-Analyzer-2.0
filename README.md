@@ -88,4 +88,47 @@ Users may browse job listings from supported platforms and directly analyze thei
 
 ---
 
-Let me know if you'd like to add contributors, a license, or a "How to Run Locally" section next!
+## 🧠 How AI Is Used
+
+This application uses Artificial Intelligence to provide deep, semantic-level analysis of resumes and job descriptions:
+
+- **Natural Language Understanding:**  
+  Utilizes BERT-based transformer models (via Hugging Face Transformers) to generate semantic embeddings of both resumes and job descriptions, capturing the true meaning beyond exact keyword matches.
+
+- **Semantic Similarity Matching:**  
+  Uses Pinecone’s vector search engine to compare resume embeddings against job descriptions and return a relevance score based on cosine similarity.
+
+- **Skill & Keyword Extraction:**  
+  Identifies missing or underrepresented skills by comparing high-weighted tokens and phrases from job listings to those in the uploaded resume.
+
+- **Categorized Feedback Engine:**  
+  AI-generated feedback is broken down into categories like experience, formatting, and skills — helping users understand where they can improve and why.
+
+- **Future Expansion:**  
+  Plans to integrate large language models (LLMs) for conversational resume feedback and auto-improvement suggestions based on job role context.
+
+---
+
+## ⚠️ Limitations
+
+While the platform provides AI-powered insights, there are a few important limitations to note:
+
+- **Generalized Scoring:**  
+  The match score is based on semantic similarity and not tailored to specific industries or company preferences.
+
+- **Static Feedback Rules:**  
+  Feedback is generated using pattern-based detection and cosine thresholds — it does not yet incorporate true contextual reasoning or deep learning interpretability.
+
+- **Model Bias:**  
+  The BERT model may reflect biases present in its training data, which could affect how resumes are interpreted and scored.
+
+- **Limited File Handling:**  
+  Currently optimized for clean, text-based PDF or Word resumes. Heavily formatted or image-based files may reduce accuracy.
+
+- **No Human Review:**  
+  The system does not replace professional resume reviews or hiring advice — it is meant as a tool to augment, not replace, human judgment.
+
+---
+
+
+
