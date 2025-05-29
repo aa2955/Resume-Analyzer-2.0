@@ -1,24 +1,91 @@
-# Resume_Analyzer_Documentation
-### Building an AI Powered Resume Analyzer and Job Matcher
-### Team members:
-* Aileen Ni: an246@njit.edu
-* Zarrar Nawaz: zkn2@njit.edu
-* Anurag Agarwal: aa2955@njit.edu
-* Thomas Ampadu: tba5@njit.edu
-* Rohan Shanbhag: rbs23@njit.edu
+# 🧠 AI-Powered Resume Analyzer
 
-### Project Overview
-#### Description: A platform where users can upload resumes and receive feedback on improving them, with personalized job recommendations based on resume content.
-#### Tech Stack: Backend for handling resumes and feedback; an API to communicate between the front end and NLP model.
-#### New Technology: Natural Language Processing (NLP) to analyze resumes, along with machine learning to match jobs to resume keywords and skills.
-### Feature Tracker Sheet
-https://docs.google.com/spreadsheets/d/18n-wxSDGxPUyugT_XQuFrePTRRVdas0kI7siFDU6Vek/edit?gid=0#gid=0
+This web application helps job seekers improve their resumes and understand how well they match specific job descriptions. Powered by AI, it provides personalized feedback and a relevance score to help users tailor their applications more effectively.
 
-#### How to use:
-# First register by providing a username, email, password, and then confirm the password.
-# Then go to the login page by clicking the link and login by entering the email and password you used on the register page
-# Go to the resume upload page and click the button to upload a resume that is either a .pdf or .docx file. Then click submit resume
-# Provide a job description and the click submit
-# Go to the dashboard and you will see a score to see how well the resume matches the job description. You will also see the skills and keywords that were matched and the ones that were not matched. You will also be able to see any improvement suggestions which can be filtered by skills, experience, and formatting. You can then download the information page by clicking the download pdf report button
-# Click on the data link on the top and it will take you to a page where you can click the fetch current data button. This will give the resume as text and the job description. Click the fetch results button and you will be provided with a percentage of how well the job description and resume match
-# Logout when you are finished
+---
+
+## 🛠 Tech Stack
+
+**Frontend:**  
+- Next.js (React)  
+- HTML/CSS  
+- Axios  
+
+**Backend:**  
+- FastAPI (Python)  
+- Hugging Face Transformers (BERT)  
+- Pinecone (vector search)  
+- PostgreSQL  
+
+**Authentication:**  
+- JWT-based auth  
+
+**DevOps & Deployment:**  
+- AWS Lambda (serverless backend)  
+- Vercel (frontend hosting)  
+- GitHub Actions (CI/CD)  
+
+---
+
+## ✅ Key Features
+
+### 1. User Accounts & Login  
+Users can sign up or log in to access their dashboard, manage resumes, and track analysis history.
+
+### 2. Resume Upload  
+After logging in, users can upload their resumes in PDF or Word format. The app will process the content automatically.
+
+### 3. Job Description Comparison  
+Users can paste a job listing or upload a job description file to compare it with their resume.
+
+### 4. Match Score & Feedback  
+The app generates a match score that shows how well the resume aligns with the selected job description. Users receive categorized feedback on:
+- Skills match
+- Experience alignment
+- Formatting suggestions
+- Missing keywords or buzzwords
+
+### 5. Improvement Suggestions  
+The platform offers specific, actionable suggestions to increase the match score and improve resume quality.
+
+### 6. Saved Results  
+Users can view and revisit their previous analyses to track progress or apply changes.
+
+### 7. Optional Job Board Integration (Future Feature)  
+Users may browse job listings from supported platforms and directly analyze their resume against listings with one click.
+
+---
+
+## 🗂️ Sprints & Milestones
+
+### 🟢 **Sprint 1: MVP Setup**
+- Project planning and repo setup
+- Resume upload UI
+- Basic FastAPI backend with mock analysis response
+- Local testing of Hugging Face model inference
+
+### 🟡 **Sprint 2: Core Functionality**
+- Integrate Pinecone for semantic job matching
+- Upload + parse job descriptions
+- Resume-job scoring logic
+- Basic feedback structure
+
+### 🟠 **Sprint 3: UI Feedback & Analysis**
+- Build results page with categorized feedback
+- Match score visualization (progress bar, %)
+- Error handling and UI polish
+
+### 🔵 **Sprint 4: Authentication & User Dashboard**
+- JWT-based login/register
+- Save & view previous analyses
+- Build user dashboard
+
+### 🟣 **Sprint 5: Testing & Deployment**
+- Frontend/backend testing (unit + integration)
+- Deploy backend to AWS Lambda
+- Deploy frontend to Vercel
+- Setup CI/CD with GitHub Actions
+
+---
+
+Let me know if you'd like to add contributors, a license, or a "How to Run Locally" section next!
