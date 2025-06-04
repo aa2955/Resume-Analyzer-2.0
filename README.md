@@ -22,7 +22,7 @@ This web application helps job seekers improve their resumes and understand how 
 
 **DevOps & Deployment:**  
 - AWS Lambda (serverless backend)  
-- Vercel (frontend hosting)  
+- Github Pages (frontend hosting)  
 - GitHub Actions (CI/CD)  
 
 ---
